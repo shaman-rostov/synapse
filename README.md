@@ -7,7 +7,8 @@ user handling, entrypoint and healthcheck) for the Matrix homeserver on the orac
 Upstream copies its runtime libraries (libpq, OpenSSL, libxml2, …) in as distroless-style records under
 `/var/lib/dpkg/status.d`, which `apt-get upgrade` does not see, so a fix such as libpq 17.12 only arrives with the
 next Synapse release. The build reinstalls those packages through apt at their current versions, drops the records,
-and upgrades the rest of the system.
+and upgrades the rest of the system. `gosu` (the entrypoint's privilege drop) is rebuilt from source with a current Go
+toolchain instead of Debian's build on Go 1.24.4; `GOSU_VERSION` is bumped by hand.
 
 Dependabot bumps the pinned base (Synapse minor releases); a major version is a deliberate change. CI starts a
 throwaway SQLite homeserver and checks `/health` before publishing.

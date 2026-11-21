@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Generates a throwaway SQLite homeserver, starts it and checks /health and that psycopg2 loads the image's libpq.
+# Generates a throwaway SQLite homeserver, starts it, checks /health, the libpq psycopg2 loads and the rebuilt gosu.
 set -euo pipefail
 IMAGE=${1:?image}
 dir=$(mktemp -d); data=$dir/data; mkdir "$data"
@@ -13,4 +13,5 @@ port=$(docker port "$name" 8008/tcp | head -1 | sed 's/.*://')
 for _ in $(seq 60); do curl -fsS "http://127.0.0.1:$port/health" 2>/dev/null | grep -q OK && break; sleep 1; done
 curl -fsS "http://127.0.0.1:$port/health" | grep -q OK || { echo "FAIL: /health"; docker logs "$name"; exit 1; }
 libpq=$(docker exec "$name" python -c 'import psycopg2.extensions as e; print(e.libpq_version())')
+docker exec "$name" gosu --version | grep -q "go1\.2[7-9]" || { echo "FAIL: gosu not rebuilt"; exit 1; }
 echo "PASS synapse $(docker exec "$name" python -c 'import synapse; print(synapse.__version__)') libpq $libpq"
