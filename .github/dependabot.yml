@@ -1,0 +1,14 @@
+version: 2
+updates:
+  # Synapse minor releases are its regular fortnightly releases; a major version is a deliberate change
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+    ignore:
+      - dependency-name: matrixdotorg/synapse
+        update-types: ["version-update:semver-major"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
