@@ -11,7 +11,7 @@ WORKDIR /src
 RUN go mod init build && go get github.com/tianon/gosu@$GOSU_VERSION \
  && CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -trimpath -ldflags=-s -o /out/gosu github.com/tianon/gosu
 
-FROM matrixdotorg/synapse:v1.164.2@sha256:f0df87cff259872637b4b5e5174b9977e5e3046dd421505407803b5e45c5f842
+FROM matrixdotorg/synapse:v1.166.0@sha256:2cdc84f1de4687af89e4b7b1fe7b5f93e0ee7913243b63f79b05319cb6a8f525
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends $(ls /var/lib/dpkg/status.d | grep -vx gosu); \
